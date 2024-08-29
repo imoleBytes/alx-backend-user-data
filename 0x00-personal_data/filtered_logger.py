@@ -39,9 +39,8 @@ def filter_datum1(
     return new_msg
 
 
-def filter_datum(
-        fields: list[str], redaction: str,
-        message: str, separator: str) -> str:
+def filter_datum(fields: list[str], redaction: str,
+                 message: str, separator: str) -> str:
     """returns the log message obfuscated:"""
     for field in fields:
         message = \
