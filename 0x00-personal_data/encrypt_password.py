@@ -8,13 +8,16 @@ Use the bcrypt package to perform the hashing (with hashpw).
 import bcrypt
 
 
-def hash_password(password: str) -> str:
+def hash_password(password: str) -> bytes:
     """ hash pasword """
     bytes_password = password.encode()
 
     hashed_pwd = bcrypt.hashpw(bytes_password, bcrypt.gensalt())
     return hashed_pwd
 
+
+def is_valid():
+    ...
 
 if __name__ == "__main__":
     password = "MyAmazingPassw0rd"
