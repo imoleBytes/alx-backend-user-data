@@ -13,9 +13,10 @@ The function should use a regex to replace occurrences of certain field
 filter_datum should be less than 5 lines long and use re.sub to perform
 the substitution with a single regex.
 """
+import re
 
 
-def filter_datum(
+def filter_datum1(
         fields: list[str], redaction: str,
         message: str, separator: str) -> str:
     """ replace sensitive data with redaction"""
@@ -36,6 +37,17 @@ def filter_datum(
     #     message = re.sub(pattern, replacement, message)
         # message = message.replace(f"{field}={separator}")
     return new_msg
+
+
+def filter_datum(
+        fields: list[str], redaction: str,
+        message: str, separator: str) -> str:
+    """returns the log message obfuscated:"""
+    for field in fields:
+        message = \
+            re.sub(f"{field}=.*?{separator}",
+                   f"{field}={redaction}{separator}", message)
+    return message
 
 
 if __name__ == "__main__":
