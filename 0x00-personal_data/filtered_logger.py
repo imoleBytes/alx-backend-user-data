@@ -14,9 +14,10 @@ filter_datum should be less than 5 lines long and use re.sub to perform
 the substitution with a single regex.
 """
 import re
-from typing import (
-    List
-)
+import logging
+from typing import List
+import mysql.connector as MYSQLDB
+import os
 
 
 def filter_datum(fields: List[str], redaction: str,
@@ -26,6 +27,36 @@ def filter_datum(fields: List[str], redaction: str,
         message = re.sub(f"{field}=.*?{separator}",
                          f"{field}={redaction}{separator}", message)
     return message
+
+
+class RedactingFormatter(logging.Formatter):
+    """ Redacting Formatter class
+        """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields):
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        filter_datum(self.fields, self.REDACTION, record, self.SEPARATOR)
+
+        # NotImplementedError
+        return ''
+
+
+def get_db() -> MYSQLDB.connection.MySQLConnection:
+    """return a mysql connection """
+    conn = MYSQLDB.connect(
+        host=os.getenv('PERSONAL_DATA_DB_HOST', 'localhost'),
+        user=os.getenv('PERSONAL_DATA_DB_USERNAME', 'root'),
+        password=os.getenv('PERSONAL_DATA_DB_PASSWORD', ''),
+        database=os.getenv('PERSONAL_DATA_DB_NAME')
+    )
+    return conn
 
 
 if __name__ == "__main__":
