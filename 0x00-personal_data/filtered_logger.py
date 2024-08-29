@@ -16,29 +16,6 @@ the substitution with a single regex.
 import re
 
 
-def filter_datum1(
-        fields: list[str], redaction: str,
-        message: str, separator: str) -> str:
-    """ replace sensitive data with redaction"""
-    new_msg = ""
-    items = message.split(separator)
-    items = list(filter(lambda x: True if x != '' else False, items))
-    for item in items:
-        k, _ = item.split('=')
-        if k not in fields:
-            new_msg += item + separator
-        else:
-            new_msg += f"{k}={redaction}{separator}"
-
-    # for field in fields:
-    #     pattern = rf"{field}=.*{separator}"
-    #     replacement = f"{field}={redaction}{separator}"
-
-    #     message = re.sub(pattern, replacement, message)
-        # message = message.replace(f"{field}={separator}")
-    return new_msg
-
-
 def filter_datum(fields: list[str], redaction: str,
                  message: str, separator: str) -> str:
     """returns the log message obfuscated:"""
