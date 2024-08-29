@@ -20,6 +20,9 @@ import mysql.connector as MYSQLDB
 import os
 
 
+PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+
+
 def filter_datum(fields: List[str], redaction: str,
                  message: str, separator: str) -> str:
     """returns the log message obfuscated:"""
@@ -38,14 +41,34 @@ class RedactingFormatter(logging.Formatter):
     SEPARATOR = ";"
 
     def __init__(self, fields):
+        """ init method"""
         super(RedactingFormatter, self).__init__(self.FORMAT)
         self.fields = fields
 
     def format(self, record: logging.LogRecord) -> str:
-        filter_datum(self.fields, self.REDACTION, record, self.SEPARATOR)
+        """ redact the message of LogRecord instance """
+        msg = super(RedactingFormatter, self).format(record)
+        redacted_msg = filter_datum(
+            self.fields, self.REDACTION, msg, self.SEPARATOR)
 
-        # NotImplementedError
-        return ''
+        return redacted_msg
+
+
+def get_logger() -> logging.Logger:
+    """
+    Return a logging.Logger object
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    handler = logging.StreamHandler()
+
+    formatter = RedactingFormatter(PII_FIELDS)
+
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    return logger
 
 
 def get_db() -> MYSQLDB.connection.MySQLConnection:
@@ -59,18 +82,21 @@ def get_db() -> MYSQLDB.connection.MySQLConnection:
     return conn
 
 
+def main():
+    """
+    main entry point
+    """
+    db = get_db()
+    logger = get_logger()
+    cursor = db.cursor()
+    cursor.execute("SELECT * FROM users;")
+    fields = cursor.column_names
+    for row in cursor:
+        message = "".join("{}={}; ".format(k, v) for k, v in zip(fields, row))
+        logger.info(message.strip())
+    cursor.close()
+    db.close()
+
+
 if __name__ == "__main__":
-
-    fields = ["password", "date_of_birth"]
-    # fields = ["password", "name"]
-
-    messages = \
-        [
-            "name=egg;email=eggmin@eggsample.com;\
-password=eggcellent;date_of_birth=12/12/1986;",
-            "name=bob;email=bob@dylan.com;password=bobbycool;\
-date_of_birth=03/04/1993;"
-        ]
-
-    for message in messages:
-        print(filter_datum(fields, 'xxx', message, ';'))
+    main()
