@@ -21,12 +21,17 @@ from typing import List, TypeVar
 
 
 class Auth:
+    """ Auth class"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
+        """ public require_auth method
+            Return bool
+        """
         return False
 
     def authorization_header(self, request=None) -> str:
+        """ authorization header method"""
         return None
-        ...
 
     def current_user(self, request=None) -> TypeVar('User') | None:
+        """ return user or none"""
         return None
