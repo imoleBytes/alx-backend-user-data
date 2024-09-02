@@ -33,3 +33,12 @@ def testing_unauthorized():
        - Raise a 401 error
     """
     abort(401)
+
+
+@app_views.route('forbidden', strict_slashes=False)
+def testing_forbidden():
+    """GET /api/v1/forbidden
+    Return:
+       - Raise a 403 error
+    """
+    abort(403)
