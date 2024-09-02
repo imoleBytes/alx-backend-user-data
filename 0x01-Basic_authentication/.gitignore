@@ -7,3 +7,4 @@ api/v1/views/__pycache__
 api/v1/views/.DS_Store
 models/__pycache__
 models/.DS_Store
+api/v1/auth/__pycache__
