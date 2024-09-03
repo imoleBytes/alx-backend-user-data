@@ -16,15 +16,18 @@ public method def current_user(self, request=None) -> TypeVar('User'):
 This class is the template for all authentication system you will implement.
 """
 # from flask import request
-from typing import (List, TypeVar)
+from typing import (
+    List, TypeVar
+)
 
 
 class Auth:
-    """ This is the Auth class"""
+    """
+    This is the Auth class
+    """
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
-        """ public require_auth method
-            Return bool
-        """
+        """public require_auth method
+            Return bool"""
         if path and path[-1] != '/':
             path += '/'
 
@@ -35,14 +38,14 @@ class Auth:
         return False
 
     def authorization_header(self, request=None) -> str:
-        """ authorization header method"""
+        """Return authorization value from request header"""
         if request is None:
             return None
-        if 'Authorization' in request.headers:
-            return request.headers.get('Authorization')
-        else:
+        header = request.headers.get('Authorization')
+        if header is None:
             return None
+        return header
 
-    def current_user(self, request=None) -> TypeVar('User') | None:
-        """ return user or none"""
+    def current_user(self, request=None) -> TypeVar('User'):
+        """return user or none"""
         return None
