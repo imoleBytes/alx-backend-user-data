@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""
-Now you will create a class to manage the API authentication.
+""" Now you will create a class to manage the API authentication.
 Create a folder api/v1/auth
 Create an empty file api/v1/auth/__init__.py
 Create the class Auth:
@@ -16,12 +15,12 @@ public method def current_user(self, request=None) -> TypeVar('User'):
  that returns None - request will be the Flask request object
 This class is the template for all authentication system you will implement.
 """
-from flask import request
-from typing import List, TypeVar
+# from flask import request
+from typing import (List, TypeVar)
 
 
 class Auth:
-    """ Auth class"""
+    """ This is the Auth class"""
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """ public require_auth method
             Return bool
