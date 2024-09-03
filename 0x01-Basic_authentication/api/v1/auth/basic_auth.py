@@ -58,6 +58,7 @@ class BasicAuth(Auth):
         splitted_str = decoded_base64_authorization_header.split(':')
         email = splitted_str[0]
         passwd = decoded_base64_authorization_header.removeprefix(email)
+        passwd = passwd[1:]
 
         return email, passwd
 
