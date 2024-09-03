@@ -28,14 +28,21 @@ class Auth:
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """public require_auth method
             Return bool"""
-        if path and path[-1] != '/':
+        if not path:
+            return True
+
+        if path[-1] != '/':
             path += '/'
 
-        if excluded_paths is None or '':
+        if excluded_paths is None or excluded_paths == []:
             return True
-        if path is None or path not in excluded_paths:
-            return True
-        return False
+        if path in excluded_paths:
+            return False
+        else:
+            for i in excluded_paths:
+                if i.startswith(path):
+                    return False
+            return False
 
     def authorization_header(self, request=None) -> str:
         """Return authorization value from request header"""
