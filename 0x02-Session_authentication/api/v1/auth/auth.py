@@ -19,6 +19,7 @@ This class is the template for all authentication system you will implement.
 from typing import (
     List, TypeVar
 )
+import os
 
 
 class Auth:
@@ -61,3 +62,11 @@ class Auth:
     def current_user(self, request=None) -> TypeVar('User'):
         """return user or none"""
         return None
+
+    def session_cookie(self, request=None):
+        """ returns a cookie value from a request: """
+        if request is None:
+            return None
+        session_name = os.getenv('SESSION_NAME')
+        cookie = request.cookies.get(session_name)
+        return cookie
