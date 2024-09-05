@@ -31,7 +31,7 @@ In the file api/v1/views/__init__.py, you must add this new view
 at the end of the file.
 """
 from api.v1.views import app_views
-from flask import request, jsonify
+from flask import request, jsonify, abort
 from models.user import User
 import os
 
@@ -63,3 +63,13 @@ def session_login():
             return response
 
     return jsonify({"error": "wrong password"}), 401
+
+
+@app_views.route(
+        '/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+def session_login():
+    """route to handle session logout """
+    from api.v1.app import auth
+    if not auth.destroy_session(request):
+        abort(404)
+    return jsonify({}), 200
