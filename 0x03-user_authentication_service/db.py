@@ -2,12 +2,12 @@
 """DB module
 """
 from sqlalchemy import create_engine
-# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
-
-from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
+
 
 from user import Base, User
 
@@ -57,3 +57,19 @@ class DB:
                 if getattr(User, k) == v:
                     return user
         raise NoResultFound
+
+    def update_user(self, user_id: int, **kwargs) -> None:
+        """
+        takes as argument a required user_id integer and
+        arbitrary keyword arguments, and returns None.
+        """
+        try:
+            user = self.find_user_by(id=user_id)
+        except NoResultFound:
+            raise ValueError
+
+        for k, v in kwargs.items():
+            if k not in User.__dict__:
+                raise ValueError
+            setattr(user, k, v)
+        self._session.commit()
