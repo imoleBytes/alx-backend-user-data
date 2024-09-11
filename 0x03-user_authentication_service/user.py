@@ -13,10 +13,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
 
-base = declarative_base()
+Base = declarative_base()
 
 
-class User(base):
+class User(Base):
     """ Definition for User model"""
     __tablename__ = "users"
 
