@@ -25,10 +25,3 @@ class User(Base):
     hashed_password = Column(String(250), nullable=False)
     session_id = Column(String(250))
     reset_token = Column(String(250))
-
-
-if __name__ == "__main__":
-    print(User.__tablename__)
-
-    for column in User.__table__.columns:
-        print("{}: {}".format(column, column.type))
