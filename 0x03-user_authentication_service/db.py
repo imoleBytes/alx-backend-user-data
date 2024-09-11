@@ -39,7 +39,9 @@ class DB:
 
         self._session.add(user)
         self._session.commit()
-        return user
+
+        added_user = self._session.query(User).filter_by(email=email).first()
+        return added_user
 
     def find_user_by(self, **kwargs) -> User:
         """

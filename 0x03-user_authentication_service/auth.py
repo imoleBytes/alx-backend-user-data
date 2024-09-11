@@ -34,7 +34,7 @@ class Auth:
         hashed = _hash_password(password)
 
         new_user = self._db.add_user(email, str(hashed))
-        return user
+        return new_user
 
 
 # if __name__ == "__main__":
