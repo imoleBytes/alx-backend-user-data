@@ -7,6 +7,8 @@ The returned bytes is a salted hash of the input password, hashed with bcrypt.
 hashpw.
 """
 import bcrypt
+from db import DB
+from user import User
 
 
 def _hash_password(password: str) -> bytes:
@@ -17,5 +19,23 @@ def _hash_password(password: str) -> bytes:
     return hashed_pass
 
 
-if __name__ == "__main__":
-    print(_hash_password("Hello Holberton"))
+class Auth:
+    """Auth class to interact with the authentication database.
+    """
+    def __init__(self):
+        self._db = DB()
+
+    def register_user(self, email: str, password: str) -> User:
+        """"""
+        user = self._db._session.query(User).filter_by(email=email)
+        if user:
+            raise ValueError(f"User {email} already exists")
+
+        hashed = _hash_password(password)
+
+        new_user = self._db.add_user(email, str(hashed))
+        return user
+
+
+# if __name__ == "__main__":
+#     print(_hash_password("Hello Holberton"))
