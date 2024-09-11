@@ -6,6 +6,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.exc import InvalidRequestError
+
 from user import Base, User
 
 
@@ -38,12 +41,19 @@ class DB:
         self._session.commit()
         return user
 
+    def find_user_by(self, **kwargs) -> User:
+        """
+        This method takes in arbitrary keyword arguments and returns the
+        first row found in the users table as filtered by the method's input
+        arguments.
+        """
+        users = self._session.query(User)
 
-if __name__ == "__main__":
-    my_db = DB()
+        for k, v in kwargs.items():
+            if k not in User.__dict__:
+                raise InvalidRequestError
 
-    user_1 = my_db.add_user("test@test.com", "SuperHashedPwd")
-    print(user_1.id)
-
-    user_2 = my_db.add_user("test1@test.com", "SuperHashedPwd1")
-    print(user_2.id)
+            for user in users:
+                if getattr(User, k) == v:
+                    return user
+        raise NoResultFound
