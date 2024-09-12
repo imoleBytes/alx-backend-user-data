@@ -64,6 +64,21 @@ class Auth:
             password.encode(), str(user.hashed_password).encode()
         )
 
+    def create_session(self, email: str) -> str:
+        """
+        It takes an email string argument and returns the
+        session ID as a string.
+        """
+
+        try:
+            user = self._db.find_user_by(email=email)
+            user.session_id = _generate_uuid()
+            self._db._session.commit()
+
+            return user.session_id
+        except Exception:
+            return None
+
 
 # if __name__ == "__main__":
 #     print(_hash_password("Hello Holberton"))
