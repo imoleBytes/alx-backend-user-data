@@ -5,7 +5,7 @@ In this task, you will set up a basic Flask app.
 Create a Flask app that has a single GET route ("/") and use flask.jsonify
 to return a JSON payload of the form:
 """
-from flask import Flask, jsonify, request, abort, make_response
+from flask import Flask, jsonify, request, abort, make_response, redirect
 
 from auth import Auth
 
@@ -54,6 +54,20 @@ def login():
     )
     response.set_cookie("session_id", session_id)
     return response
+
+
+@app.route("/sessions", methods=["DELETE"], strict_slashes=False)
+def logout():
+    """ this removes session id from the user's table"""
+    token = request.cookies.get("session_id")
+    if not token:
+        abort(403)
+    user = AUTH.get_user_from_session_id(token)
+    if user:
+        AUTH.destroy_session(user.id)
+        redirect("/")
+    else:
+        abort(403)
 
 
 if __name__ == "__main__":
