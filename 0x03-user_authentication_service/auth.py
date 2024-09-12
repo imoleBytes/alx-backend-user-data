@@ -79,6 +79,16 @@ class Auth:
         except Exception:
             return None
 
+    def get_user_from_session_id(self, session_id: str) -> User:
+        """gets the User object from the session id otherwise return None"""
+        if session_id is None:
+            return None
+        try:
+            user = self._db.find_user_by(session_id=session_id)
+            return user
+        except Exception:
+            return None
+
 
 # if __name__ == "__main__":
 #     print(_hash_password("Hello Holberton"))
