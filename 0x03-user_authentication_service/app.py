@@ -37,8 +37,12 @@ def users() -> str:
 
 @app.route("/sessions", methods=["POST"], strict_slashes=False)
 def login():
-    email = request.form.get("email")
-    password = request.form.get("password")
+    try:
+        email = request.form.get("email")
+        password = request.form.get("password")
+    except Exception:
+        email = None
+        password = None
 
     if not AUTH.valid_login(email, password):
         abort(401)
