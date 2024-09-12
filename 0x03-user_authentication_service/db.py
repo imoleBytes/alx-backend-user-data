@@ -40,7 +40,7 @@ class DB:
         self._session.add(user)
         self._session.commit()
 
-        added_user = self._session.query(User).filter_by(email=email)
+        added_user = self._session.query(User).filter_by(email=email).first()
         return added_user
 
     def find_user_by(self, **kwargs) -> User:
@@ -49,16 +49,21 @@ class DB:
         first row found in the users table as filtered by the method's input
         arguments.
         """
-        users = self._session.query(User)
+        if kwargs is None:
+            raise InvalidRequestError
+        user = self._session.query(User).filter_by(**kwargs).first()
+        
+        if user is None:
+            raise NoResultFound
+        return user
+        # for k, v in kwargs.items():
+        #     if k not in User.__dict__:
+        #         raise InvalidRequestError
 
-        for k, v in kwargs.items():
-            if k not in User.__dict__:
-                raise InvalidRequestError
-
-            for user in users:
-                if getattr(User, k) == v:
-                    return user
-        raise NoResultFound
+        #     for user in users:
+        #         if getattr(User, k) == v:
+        #             return user
+        # raise NoResultFound
 
     def update_user(self, user_id: int, **kwargs) -> None:
         """
