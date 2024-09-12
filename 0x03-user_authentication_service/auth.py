@@ -30,6 +30,8 @@ class Auth:
         """
         this handle user registration
         """
+        if email is None or password is None:
+            raise ValueError(f"email and password are mandatory")
         user = self._db._session.query(User).filter_by(email=email)
         if user:
             raise ValueError(f"User {email} already exists")
