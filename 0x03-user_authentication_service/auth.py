@@ -9,6 +9,7 @@ hashpw.
 import bcrypt
 from db import DB
 from user import User
+from sqlalchemy.orm.exc import NoResultFound
 
 
 def _hash_password(password: str) -> bytes:
@@ -31,16 +32,17 @@ class Auth:
         this handle user registration
         """
         if email is None or password is None:
-            return None
-            # raise ValueError(f"email and password are mandatory")
-        user = self._db._session.query(User).filter_by(email=email)
-        if user:
+            # return None
+            raise ValueError(f"email and password are mandatory")
+
+        try:
+            self._db.find_user_by(email=email)
+        except NoResultFound:
+            hashed_pass = _hash_password(password)
+            new_user = self._db.add_user(email, hashed_pass.decode())
+            return new_user
+        else:
             raise ValueError(f"User {email} already exists")
-
-        hashed = _hash_password(password)
-
-        new_user = self._db.add_user(email, str(hashed))
-        return new_user
 
     def valid_login(self, email: str, password: str) -> bool:
         """ checks if user is valid """
