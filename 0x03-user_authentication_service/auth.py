@@ -89,6 +89,14 @@ class Auth:
         except Exception:
             return None
 
+    def destroy_session(self, user_id) -> None:
+        """ update user's session id to None """
+        try:
+            self._db.update_user(user_id, session_id=None)
+            return None
+        except Exception:
+            return None
+
 
 # if __name__ == "__main__":
 #     print(_hash_password("Hello Holberton"))
